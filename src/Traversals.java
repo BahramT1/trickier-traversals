@@ -54,7 +54,7 @@ public class Traversals {
   }
   String leftStr = buildPostOrderString(node.left);
   String rightStr = buildPostOrderString(node.right);
-  
+
   return leftStr + rightStr + node.value.toString();
 
   }
@@ -68,7 +68,26 @@ public class Traversals {
    * @return a list of node values in a top-to-bottom order, or an empty list if the tree is null
    */
   public static <T> List<T> collectLevelOrderValues(TreeNode<T> node) {
-    return null;
+    List<T> result = new ArrayList<>();
+    if (node == null) {
+        return result;
+    }
+    
+    Queue<TreeNode<T>> queue = new LinkedList<>();
+    queue.add(node);
+    
+    while (!queue.isEmpty()) {
+        TreeNode<T> current = queue.poll();
+        result.add(current.value);
+        
+        if (current.left != null) {
+            queue.add(current.left);
+        }
+        if (current.right != null) {
+            queue.add(current.right);
+        }
+    } 
+    return result;
   }
 
   /**
@@ -79,8 +98,22 @@ public class Traversals {
    * @return the number of unique values in the tree, or 0 if the tree is null
    */
   public static int countDistinctValues(TreeNode<Integer> node) {
-    return 0;
-  }
+        if (node == null) return 0;
+
+        Set<Integer> uniqueValues = new HashSet<>();
+        collectValues(node, uniqueValues);
+        return uniqueValues.size();
+    }
+    
+  public static void collectValues(TreeNode<Integer> node, Set<Integer> set) {
+        if (node == null) return;
+
+        set.add(node.value);
+
+        collectValues(node.left, set);
+        collectValues(node.right, set);
+    }
+    
 
   /**
    * Determines whether there is at least one root-to-leaf path in the tree
@@ -91,7 +124,22 @@ public class Traversals {
    * @return true if there exists a strictly increasing root-to-leaf path, false otherwise
    */
   public static boolean hasStrictlyIncreasingPath(TreeNode<Integer> node) {
-    return false;
+    if (node == null) return false;
+
+    if (node.left == null && node.right == null) return true;
+    
+    boolean leftPath = false;
+    boolean rightPath = false;
+    
+    if (node.left != null && node.left.value > node.value) {
+        leftPath = hasStrictlyIncreasingPath(node.left);
+    }
+    
+    if (node.right != null && node.right.value > node.value) {
+        rightPath = hasStrictlyIncreasingPath(node.right);
+    }
+    
+    return leftPath || rightPath;
   }
 
   // OPTIONAL CHALLENGE
@@ -140,4 +188,4 @@ public class Traversals {
   public static <T> List<List<T>> findAllRootToLeafPaths(TreeNode<T> node) {
     return null;
   }
-}
+} 
